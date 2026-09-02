@@ -3,8 +3,8 @@
 
 <img width="1888" height="898" alt="image" src="https://github.com/user-attachments/assets/041887ed-fb84-43fe-b5cf-e35eb1dfc461" />
 
-Check this out
->> https://ka1hatsu.github.io/Retro-Styled-New-Tab-Extension/
+Check this out:
+https://ka1hatsu.github.io/Retro-Styled-New-Tab-Extension/
 
 ### Features of this new tab extension:
 1. Will show the weather based on your geolocation and will show the animated pixel-art weather conditions (clear day/night, rain, thunderstorm, snow, fog, overcast).
