@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "Retro Pixel New Tab",
+  "version": "2.0",
+  "description": "Pixel-art clock, live weather, and Tone.js atmospheric synthesizer.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  }
+}
