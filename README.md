@@ -1,5 +1,6 @@
 # Retro-Styled-New-Tab-Extension
 
+
 <img width="1888" height="898" alt="image" src="https://github.com/user-attachments/assets/041887ed-fb84-43fe-b5cf-e35eb1dfc461" />
 
 ### Features of this new tab extension:
