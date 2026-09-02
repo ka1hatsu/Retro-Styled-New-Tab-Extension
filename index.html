@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Tab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --grey: #8a8a8a;
+    --dim-grey: #333333;
+    --sun-yellow: #ffd700;
+    --cloud-white: #e8f4fc;
+    --cloud-blue: #b9d7ea;
+    --thunder-blue: #a5f3fc;
+    --thunder-white: #f0fdfa;
+    --rain-blue: #7dd3fc;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: var(--black);
+  }
+
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', monospace;
+    color: var(--white);
+    overflow: hidden;
+    position: relative;
+  }
+
+  #sound-btn {
+    position: absolute;
+    top: 24px;
+    right: 28px;
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--grey);
+    font-family: 'VT323', monospace;
+    font-size: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 1px;
+  }
+
+  #sound-btn:hover {
+    border-color: #666;
+    color: var(--white);
+    background: #111;
+  }
+
+  #sound-btn.playing {
+    border-color: #38bdf8;
+    color: #38bdf8;
+    box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+  }
+
+  main {
+    width: min(600px, 94vw);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+  }
+
+  .widget {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .w-icon {
+    width: 72px;
+    height: 72px;
+    margin-bottom: 2px;
+    overflow: visible;
+  }
+  
+  .w-icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.08));
+  }
+
+  .w-icon g {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  @keyframes cloudDrift {
+    0%, 100% { transform: translateX(-3px); }
+    50% { transform: translateX(3px); }
+  }
+  .layer-cloud {
+    animation: cloudDrift 4.5s ease-in-out infinite;
+    fill: var(--cloud-white) !important;
+    filter: drop-shadow(0 0 3px rgba(185, 215, 234, 0.5));
+  }
+
+  @keyframes sunPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.08) rotate(3deg); }
+  }
+  .layer-sun {
+    animation: sunPulse 3.5s ease-in-out infinite;
+    fill: var(--sun-yellow) !important;
+    filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+  }
+
+  @keyframes moonGlow {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #fff); }
+    50% { transform: scale(1.04); filter: drop-shadow(0 0 6px #cbd5e1); }
+  }
+  .layer-moon {
+    animation: moonGlow 4s ease-in-out infinite;
+    fill: #f8fafc !important;
+  }
+
+  @keyframes boltFlicker {
+    0%, 40%, 60%, 100% { opacity: 1; fill: var(--thunder-blue); }
+    45%, 55% { opacity: 0.1; }
+    50% { opacity: 1; fill: var(--thunder-white); filter: drop-shadow(0 0 8px #a5f3fc); }
+    92% { opacity: 0.2; }
+    94% { opacity: 1; fill: #ffffff; }
+  }
+  .layer-bolt {
+    animation: boltFlicker 2s steps(1) infinite;
+    fill: var(--thunder-blue) !important;
+  }
+
+  @keyframes rainFall {
+    0% { transform: translateY(-2px); opacity: 1; }
+    70% { opacity: 1; }
+    100% { transform: translateY(6px); opacity: 0; }
+  }
+  .layer-rain {
+    animation: rainFall 0.85s linear infinite;
+    fill: var(--rain-blue) !important;
+  }
+
+  @keyframes snowDrift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(2px, 4px); }
+  }
+  .layer-snow {
+    animation: snowDrift 3s ease-in-out infinite;
+    fill: #ffffff !important;
+  }
+
+  @keyframes fogDrift {
+    0%, 100% { transform: translateX(-4px); opacity: 0.7; }
+    50% { transform: translateX(4px); opacity: 0.95; }
+  }
+  .layer-fog {
+    animation: fogDrift 5s ease-in-out infinite;
+    fill: #94a3b8 !important;
+  }
+
+  .w-time-row {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  
+  .w-time {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(28px, 8vw, 42px);
+    line-height: 1;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  }
+  
+  .w-meridiem {
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--grey);
+  }
+
+  .w-date {
+    margin-top: 2px;
+    font-size: 21px;
+    letter-spacing: 1.5px;
+    color: #dedede;
+  }
+
+  .w-condition {
+    margin-top: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 19px;
+    color: var(--grey);
+  }
+  
+  .w-condition .temp {
+    font-size: 24px;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  .search-form {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: transparent;
+    border-bottom: 2px solid #222;
+    padding: 8px 6px;
+    gap: 12px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  }
+  
+  .search-form:focus-within {
+    border-color: #555;
+    box-shadow: 0 2px 0 0 #777;
+  }
+  
+  .search-form .prompt {
+    color: var(--grey);
+    font-size: 24px;
+    user-select: none;
+  }
+  
+  .search-form input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--white);
+    font-family: 'VT323', monospace;
+    font-size: 24px;
+    letter-spacing: 1px;
+    caret-color: #ffd700;
+  }
+  
+  .search-form input::placeholder {
+    color: #444;
+  }
+  
+  .search-form button {
+    background: transparent;
+    border: 1px solid #333;
+    color: var(--grey);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    padding: 2px 10px;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .search-form button:hover {
+    color: var(--black);
+    background: var(--white);
+    border-color: var(--white);
+  }
+
+  .shortcuts {
+    width: 100%;
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--white);
+    transition: transform 0.15s ease;
+  }
+
+  .tile:hover {
+    transform: translateY(-2px);
+  }
+  
+  .tile .badge {
+    width: 44px;
+    height: 44px;
+    border: 1px solid #282828;
+    background: #080808;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    color: var(--white);
+    transition: all 0.2s ease;
+  }
+
+  .tile .badge svg {
+    display: block;
+    fill: #ffffff;
+    transition: all 0.2s ease;
+  }
+  
+  .tile span.label {
+    font-size: 17px;
+    letter-spacing: 1px;
+    color: var(--grey);
+    transition: color 0.2s ease;
+  }
+  
+  .tile:hover span.label {
+    color: var(--white);
+  }
+
+  .tile:hover .badge {
+    border-color: #666;
+    background: #151515;
+    box-shadow: 0 0 10px rgba(255,255,255,0.1);
+  }
+
+  .tile-yt:hover .badge svg path { fill: #ff0000; }
+  .tile-gpt:hover .badge svg { fill: #10a37f; }
+  .tile-gemini:hover .badge svg path { fill: #60a5fa; }
+
+  .sound-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    border-top: 1px dashed #222;
+    padding-top: 14px;
+  }
+
+  .player-title {
+    font-size: 16px;
+    color: #555;
+    letter-spacing: 1px;
+  }
+
+  .sound-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .chip {
+    background: #080808;
+    border: 1px solid #282828;
+    color: var(--grey);
+    font-family: 'VT323', monospace;
+    font-size: 17px;
+    padding: 3px 9px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .chip:hover {
+    border-color: #555;
+    color: var(--white);
+  }
+
+  .chip.active {
+    border-color: #38bdf8;
+    color: #38bdf8;
+    background: #0f172a;
+    box-shadow: 0 0 6px rgba(56, 189, 248, 0.2);
+  }
+</style>
+</head>
+<body>
+
+<button id="sound-btn" title="Toggle audio">[ SOUND: OFF ]</button>
+
+<main>
+  <div class="widget">
+    <div class="w-icon" id="weather-icon"></div>
+    <div class="w-time-row">
+      <span class="w-time" id="time">00:00</span>
+      <span class="w-meridiem" id="meridiem">--</span>
+    </div>
+    <div class="w-date" id="date">loading date...</div>
+    <div class="w-condition">
+      <span class="temp" id="temp">--&deg;C</span>
+      <span id="condition">detecting position...</span>
+    </div>
+  </div>
+
+  <form class="search-form" action="https://www.google.com/search" method="GET">
+    <span class="prompt">&gt;</span>
+    <input type="text" name="q" placeholder="search google or type a url_" autofocus autocomplete="off">
+    <button type="submit">SEARCH</button>
+  </form>
+
+  <nav class="shortcuts">
+   
+
+    <a class="tile tile-yt" href="https://www.youtube.com">
+      <div class="badge">
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814z"/>
+          <polygon points="9.545,15.568 15.818,12 9.545,8.432" fill="#000000"/>
+        </svg>
+      </div>
+      <span class="label">YouTube</span>
+    </a>
+
+    <a class="tile tile-gpt" href="https://chatgpt.com">
+      <div class="badge">
+        <svg width="21" height="21" viewBox="0 0 24 24">
+          <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 8.71a4.465 4.465 0 0 1 2.36-1.954V12.3a.77.77 0 0 0 .39.673l5.834 3.368-2.02 1.168a.075.075 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 8.71zm16.597 3.855-5.833-3.369L15.124 8.03a.076.076 0 0 1 .071 0l4.83 2.79a4.5 4.5 0 0 1-.69 8.103V13.24a.78.78 0 0 0-.398-.675zm2.015-3.55a4.448 4.448 0 0 1-.54 3.018l-.14-.085-4.78-2.763a.77.77 0 0 0-.785 0l-5.843 3.369V10.21a.08.08 0 0 1 .033-.062L14.26 7.36a4.5 4.5 0 0 1 6.692 1.656zm-9.96-5.83a4.509 4.509 0 0 1 4.028 2.505l-.14.08-4.78 2.762a.79.79 0 0 0-.393.681v6.736l-2.02-1.168a.07.07 0 0 1-.038-.051V10.08a4.504 4.504 0 0 1 4.494-4.494zm-1.042 7.74 2.834-1.636 2.834 1.636v3.272l-2.834 1.636-2.834-1.636z"/>
+        </svg>
+      </div>
+      <span class="label">ChatGPT</span>
+    </a>
+
+    <a class="tile tile-gemini" href="https://gemini.google.com">
+      <div class="badge">
+        <svg width="22" height="22" viewBox="0 0 24 24">
+          <path d="M12 0C12 6.627 6.627 12 0 12c6.627 0 12 5.627 12 12 0-6.627 5.627-12 12-12-6.627 0-12-5.627-12-12z"/>
+        </svg>
+      </div>
+      <span class="label">Gemini</span>
+    </a>
+  </nav>
+
+  
+</main>
+
+<script src="tone.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
