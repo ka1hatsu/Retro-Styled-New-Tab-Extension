@@ -20,7 +20,21 @@
     --thunder-white: #f0fdfa;
     --rain-blue: #7dd3fc;
   }
+/* Big Retro Glowing White Arrow with Tail and Cyan Pixel Halo */
+*, html, body {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3C!-- Outer Cyan Aura --%3E%3Cpath fill='%2338bdf8' fill-opacity='0.45' d='M0 0h9l-1 2h7l-1 2h5l-1 2h3v3l-4 4-2 2-2 2 6 12-7 3-6-12-3 3-1 1H0z'/%3E%3C!-- Mid Neon Glow --%3E%3Cpath fill='%230284c7' fill-opacity='0.8' d='M1 1h6l2 2h4l2 2h4v2l-3 3-2 2-2 2 6 10-4 2-6-10-3 3v-2H1z'/%3E%3C!-- Deep Black Pixel Outline --%3E%3Cpath fill='%23000000' d='M2 2h4l2 2h4l2 2h2v1l-3 3-2 2-2 2 5 9-2 1-5-9-2 2v-2H2z'/%3E%3C!-- Brilliant White Core with Arrow Tail --%3E%3Cpath fill='%23ffffff' d='M3 3h2l2 2h4l2 2-2 2-2 2-2 2 5 7-1 1-5-8-2 2H3z'/%3E%3C/svg%3E") 2 2, default !important;
+}
 
+/* Big Retro Glowing White Pointer Hand with Cyan Halo */
+a, button, [role="button"], input[type="submit"], .chip, #sound-btn {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath fill='%2338bdf8' fill-opacity='0.45' d='M8 0h12v12h4v12h-4v4h-6v2H8v-2H4v-8H2v-6h6z'/%3E%3Cpath fill='%230284c7' fill-opacity='0.8' d='M9 1h10v11h4v10h-4v4h-5v2H9v-2H5v-7H3v-4h6z'/%3E%3Cpath fill='%23000000' d='M10 2h8v10h4v8h-4v4h-4v2h-4v-2H6v-6H4v-2h6z'/%3E%3Cpath fill='%23ffffff' d='M11 3h6v9h4v6h-4v4h-3v2h-3v-2H7v-4H5v-1h6z'/%3E%3C/svg%3E") 11 1, pointer !important;
+}
+
+/* Big Glowing White I-Beam for Search */
+input[type="text"] {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath fill='%2338bdf8' fill-opacity='0.45' d='M6 2h20v8h-6v12h6v8H6v-8h6V10H6z'/%3E%3Cpath fill='%23000000' d='M8 4h16v5h-5v14h5v5H8v-5h5V9H8z'/%3E%3Cpath fill='%23ffffff' d='M10 6h12v2h-4v16h4v2H10v-2h4V8h-4z'/%3E%3C/svg%3E") 16 16, text !important;
+}
+  
   * { box-sizing: border-box; }
 
   html, body {
@@ -384,7 +398,7 @@
 </head>
 <body>
 
-<button id="sound-btn" title="Toggle audio">[ SOUND: OFF ]</button>
+<button id="sound-btn" type="button" title="Toggle audio" aria-pressed="false">SOUND: OFF</button>
 
 <main>
   <div class="widget">
@@ -407,7 +421,7 @@
   </form>
 
   <nav class="shortcuts">
-   
+    
 
     <a class="tile tile-yt" href="https://www.youtube.com">
       <div class="badge">
@@ -438,9 +452,8 @@
     </a>
   </nav>
 
-  
+ 
 </main>
-
 
 <script src="app.js"></script>
 </body>
